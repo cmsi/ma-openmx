@@ -1,0 +1,42 @@
+--- a/source/makefile
++++ b/source/makefile
+@@ -201,7 +201,7 @@
+ # destination directory
+ #
+ 
+-PROG    = openmx
++PROG    = openmx bandgnu13 DosMain
+ DESTDIR = ../work
+ 
+ # OpenMX
+@@ -583,7 +583,7 @@
+ 
+ install: $(PROG)
+ 	mkdir -p $(DESTDIR)/usr/bin/
+-	cp $(PROG) $(DESTDIR)/usr/bin/$(PROG)
++	cp $(PROG) $(DESTDIR)/usr/bin/
+ 
+ #
+ #
+@@ -830,3 +830,6 @@
+ 	$(FC) -c solve_evp_real.f90 
+ solve_evp_complex.o: solve_evp_complex.f90 
+ 	$(FC) -c solve_evp_complex.f90
++
++bandgnu13: bandgnu13.c
++	$(CC) -D_FORTIFY_SOURCE=0 -o bandgnu13 bandgnu13.c -lm
+--- a/source/bandgnu13.c
++++ b/source/bandgnu13.c
+@@ -379,10 +379,10 @@
+   }
+   printf("%s is made\n",fname);
+ 
+-  fprintf(fp,"set data s l\n");
++  fprintf(fp,"set style data l\n");
+   fprintf(fp,"set nokey\n");
+   fprintf(fp,"set zeroaxis\n");
+-  fprintf(fp,"set ytics 1\n");
++  /* fprintf(fp,"set ytics 1\n"); */
+   fprintf(fp,"set mytics 5\n");
+ 
+   fprintf(fp,"set xra [%lf:%lf]\n",
