@@ -1,10 +1,6 @@
-Author: Daniel Leidert <dleidert@debian.org>
-Description: Set the data path accordingly to the Debian installation.
-Forwarded: not-needed
-
 --- a/source/Input_std.c
 +++ b/source/Input_std.c
-@@ -91,7 +91,7 @@
+@@ -85,7 +85,7 @@
  
    input_string("System.CurrrentDirectory",filepath,"./");
    input_string("System.Name",filename,"default");

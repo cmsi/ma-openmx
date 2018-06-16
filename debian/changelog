@@ -1,4 +1,10 @@
-openmx (3.7.8-3) wheezy; urgency=low
+openmx (3.8.5-1) unstable; urgency=low
+
+  * New upstream 3.8.5
+
+ -- Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>  Sat, 16 Jun 2018 11:23:28 +0900
+
+openmx (3.7.8-3) unstable; urgency=low
 
   * Fixed compile option for bandgnu13
   * Fixed bandgnu13 to output correct plot file for the current version of gnuplot
@@ -6,13 +12,13 @@ openmx (3.7.8-3) wheezy; urgency=low
 
  -- Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>  Sat, 25 Jul 2015 16:04:29 +0900
 
-openmx (3.7.8-2) wheezy; urgency=low
+openmx (3.7.8-2) unstable; urgency=low
 
   * Included bandgnu13 utility program
 
  -- Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>  Fri, 24 Jul 2015 09:49:51 +0900
 
-openmx (3.7.8-1) wheezy; urgency=low
+openmx (3.7.8-1) unstable; urgency=low
 
   * New upstream 3.7.8
 

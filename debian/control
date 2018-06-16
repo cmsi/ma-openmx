@@ -2,7 +2,7 @@ Source: openmx
 Section: science
 Priority: extra
 Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
-Uploaders: Christophe Prud'homme <prudhomm@debian.org>
+ Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>
 Build-Depends: debhelper (>= 8),
                gfortran,
                libblas-dev,
@@ -11,8 +11,6 @@ Build-Depends: debhelper (>= 8),
                mpi-default-dev
 Standards-Version: 3.9.4
 Homepage: http://www.openmx-square.org/
-Vcs-Svn: svn://anonscm.debian.org/debian-science/packages/openmx/trunk
-Vcs-Browser: http://anonscm.debian.org/viewvc/debian-science/packages/openmx/trunk/
 
 Package: openmx
 Architecture: any
