@@ -6,7 +6,7 @@ Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.
 Build-Depends: debhelper (>= 8),
                gfortran,
                libblas-dev,
-               libfftw3-dev (>= 3.1.2-3~),
+               libfftw3-dev,
                liblapack-dev,
                mpi-default-dev
 Standards-Version: 3.9.4
