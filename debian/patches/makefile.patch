@@ -6,46 +6,34 @@
  
 -MKLROOT = /opt/intel/mkl
 -CC = mpicc -O3 -xHOST -ip -no-prec-div -qopenmp -I/opt/intel/mkl/include/fftw
--FC = mpif90 -O3 -xHOST -ip -no-prec-div -qopenmp 
+-FC = mpif90 -O3 -xHOST -ip -no-prec-div -qopenmp
 -LIB= -L${MKLROOT}/lib/intel64 -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_openmpi_lp64 -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -liomp5 -lpthread -lm -ldl
 +# MKLROOT = /opt/intel/mkl
 +# CC = mpicc -O3 -xHOST -ip -no-prec-div -qopenmp -I/opt/intel/mkl/include/fftw
-+# FC = mpif90 -O3 -xHOST -ip -no-prec-div -qopenmp 
++# FC = mpif90 -O3 -xHOST -ip -no-prec-div -qopenmp
 +# LIB= -L${MKLROOT}/lib/intel64 -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_openmpi_lp64 -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -liomp5 -lpthread -lm -ldl
  
+ 
  #
- # System B (Sekirei) at ISSP, Univ. of Tokyo
-@@ -74,6 +74,29 @@
+@@ -102,8 +102,15 @@
  # LIB= -L${MKLROOT}/lib/intel64 -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_openmpi_lp64 -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -liomp5 -lpthread -lm -ldl
  #
  
-+include /usr/share/dpkg/default.mk
-+include /usr/share/mpi-default-dev/debian_defaults
-+DEB_RELEASE ?= $(shell lsb_release -c -s)
-+
-+ifeq ($(DEB_BUILD_ARCH_CPU), amd64)
+-
+-CFLAGS  = -g 
++ifeq ($(shell arch), x86_64)
 +  DEB_SSE =
 +else
 +  DEB_SSE = -Dnosse
 +endif
 +
-+ifeq ($(DEB_RELEASE), jessie)
-+  export SCALAPACK_LIBS:=-lscalapack-$(ARCH_DEFAULT_MPI_IMPL) -lblacs-$(ARCH_DEFAULT_MPI_IMPL) -lblacsF77init-$(ARCH_DEFAULT_MPI_IMPL)
-+else ifeq ($(DEB_RELEASE), stretch)
-+  export SCALAPACK_LIBS:=-lscalapack-$(ARCH_DEFAULT_MPI_IMPL) -lblacs-$(ARCH_DEFAULT_MPI_IMPL) -lblacsF77init-$(ARCH_DEFAULT_MPI_IMPL)
-+else ifeq ($(DEB_RELEASE), xenial)
-+  export SCALAPACK_LIBS:=-lscalapack-$(ARCH_DEFAULT_MPI_IMPL) -lblacs-$(ARCH_DEFAULT_MPI_IMPL) -lblacsF77init-$(ARCH_DEFAULT_MPI_IMPL)
-+else
-+  export SCALAPACK_LIBS:=-lscalapack-$(ARCH_DEFAULT_MPI_IMPL)
-+endif
-+
-+CC = mpicc `dpkg-buildflags --get CPPFLAGS` `dpkg-buildflags --get CFLAGS` $(DEB_SSE) -fopenmp -Dkcomp
-+FC = mpif90 `dpkg-buildflags --get CPPFLAGS` `dpkg-buildflags --get FFLAGS` -fopenmp -Dkcomp
-+LIB = $(SCALAPACK_LIBS) -lfftw3 -llapack -lblas `dpkg-buildflags --get LDFLAGS`
++CC = mpicc -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 -ffile-prefix-map=/root/build=. -fstack-protector-strong -Wformat -Werror=format-security $(DEB_SSE) -fopenmp -Dkcomp -fcommon
++FC = mpif90 -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 -ffile-prefix-map=/root/build=. -fstack-protector-strong -fallow-argument-mismatch $(DEB_SSE) -fopenmp -Dkcomp
++LIB = -Wl,-z,relro -lscalapack-openmpi -lfftw3 -llapack -lblas
  
- CFLAGS  = -g 
- 
-@@ -169,16 +192,15 @@
+ OBJS    = openmx.o openmx_common.o Input_std.o Inputtools.o init.o LU_inverse.o ReLU_inverse.o \
+           truncation.o readfile.o FT_PAO.o FT_NLP.o FT_ProExpn_VNA.o FT_VNA.o FT_ProductPAO.o \
+@@ -198,16 +205,15 @@
  # destination directory
  #
  
@@ -65,7 +53,7 @@
  
  #
  #
-@@ -187,7 +209,6 @@
+@@ -216,7 +222,6 @@
  #
  
  all: $(PROG) $(UTIL)
@@ -73,7 +61,7 @@
  
  openmx.o: openmx.c openmx_common.h tran_variables.h tran_prototypes.h 
  	$(CC) -c openmx.c
-@@ -639,9 +660,10 @@
+@@ -671,9 +676,10 @@
  #
  #
  
@@ -87,7 +75,7 @@
  
  #
  #
-@@ -660,7 +682,6 @@
+@@ -692,7 +698,6 @@
  
  DosMain: DosMain.o Inputtools.o malloc_multidimarray.o Tetrahedron_Blochl.o 
  	$(CC) -o $@ DosMain.o Inputtools.o malloc_multidimarray.o Tetrahedron_Blochl.o -lm 
@@ -95,7 +83,7 @@
  
  DosMain.o :DosMain.c openmx_common.h
  	$(CC) -o $@ -c DosMain.c
-@@ -702,7 +723,6 @@
+@@ -734,7 +739,6 @@
  
  jx: $(OBJ_jx)
  	$(CC) $(OBJ_jx) $(LIB) -lm -o jx
@@ -103,7 +91,7 @@
  
  #
  #
-@@ -712,7 +732,6 @@
+@@ -744,7 +748,6 @@
  
  tp: tp.o read_scfout.o
  	$(CC) tp.o read_scfout.o $(LIB) -lm -o tp
@@ -111,7 +99,7 @@
  
  tp.o: tp.c read_scfout.h 
  	$(CC) -c tp.c
-@@ -725,7 +744,6 @@
+@@ -757,7 +760,6 @@
  
  analysis_example: analysis_example.o read_scfout.o
  	$(CC) analysis_example.o read_scfout.o $(LIB)  -lm -o analysis_example
@@ -119,7 +107,7 @@
  
  analysis_example.o: analysis_example.c read_scfout.h 
  	$(CC) -c analysis_example.c
-@@ -742,7 +760,6 @@
+@@ -774,7 +776,6 @@
  OBJS_ESP  = esp.o Inputtools.o
  esp:	$(OBJS_ESP)
  	$(CC) $(OBJS_ESP) $(LIB) -lm -o $@
@@ -127,7 +115,7 @@
  esp.o : esp.c Inputtools.h
  	$(CC) -o $@ -c esp.c
  
-@@ -754,7 +771,6 @@
+@@ -786,7 +787,6 @@
  
  check_lead: check_lead.o Inputtools.o
  	$(CC) check_lead.o Inputtools.o -lm -o check_lead
@@ -135,7 +123,7 @@
  
  check_lead.o: check_lead.c Inputtools.h 
  	$(CC) -c check_lead.c
-@@ -768,7 +784,6 @@
+@@ -800,7 +800,6 @@
  OpticalConductivityMain: OpticalConductivityMain.o \
                Inputtools.o  malloc_multidimarray.o
  	$(CC) -o $@   OpticalConductivityMain.o  Inputtools.o  malloc_multidimarray.o -lm 
@@ -143,7 +131,7 @@
  
  #
  #
-@@ -779,7 +794,6 @@
+@@ -811,7 +810,6 @@
  OBJS_polB = polB.o read_scfout.o
  polB:	$(OBJS_polB)
  	$(CC) $(OBJS_polB) $(LIB) -lm -o polB
@@ -151,7 +139,7 @@
  
  polB.o: polB.c read_scfout.h 
  	$(CC) -c polB.c
-@@ -793,7 +807,6 @@
+@@ -825,7 +823,6 @@
  OBJS_calB = calB.o read_scfout.o
  calB:	$(OBJS_calB)
  	$(CC) $(OBJS_calB) $(LIB) -lm -o calB
@@ -159,7 +147,7 @@
  
  calB.o: calB.c read_scfout.h 
  	$(CC) -c calB.c
-@@ -807,7 +820,6 @@
+@@ -839,7 +836,6 @@
  OBJS_Z2FH = Z2FH.o read_scfout.o
  Z2FH:	$(OBJS_Z2FH)
  	$(CC) $(OBJS_Z2FH) $(LIB) -lm -o Z2FH
@@ -167,7 +155,7 @@
  
  Z2FH.o: Z2FH.c read_scfout.h 
  	$(CC) -c Z2FH.c
-@@ -820,7 +832,6 @@
+@@ -852,7 +848,6 @@
  
  example_mpi_spawn: example_mpi_spawn.o
  	$(CC) example_mpi_spawn.o $(LIB) -lm -o example_mpi_spawn
@@ -175,7 +163,7 @@
  
  example_mpi_spawn.o: example_mpi_spawn.c
  	$(CC) -c example_mpi_spawn.c
-@@ -834,7 +845,6 @@
+@@ -866,7 +861,6 @@
  
  test_mpi: test_mpi.o
  	$(CC) test_mpi.o $(LIB) -lm -o test_mpi
@@ -183,7 +171,7 @@
  
  test_mpi.o: test_mpi.c
  	$(CC) -c test_mpi.c
-@@ -1059,7 +1069,7 @@
+@@ -1093,7 +1087,7 @@
  #
  
  MulPCalc: MulPCalc.o Tools_BandCalc.o Inputtools_kSpin.o
@@ -192,24 +180,18 @@
  
  MulPCalc.o: MulPCalc.c Tools_BandCalc.h Inputtools.h read_scfout.h
  	$(CC) -c $<
-@@ -1113,7 +1123,7 @@
+@@ -1147,7 +1141,7 @@
  #
  
  MulPOnly: MulPOnly.o read_scfout.o Inputtools_kSpin.o EigenValue_Problem.o Eigen_HH.o Tools_BandCalc.o GetOrbital.o SigmaEK.o
--	$(CC) $^ $(LIB) -o $@
-+	$(FC) $^ $(LIB) -o $@
+-	$(CC) $^ $(LIB) -lm -o $@
++	$(FC) $^ $(LIB) -lm -o $@
  
  MulPOnly.o: MulPOnly.c Tools_BandCalc.h Inputtools.h read_scfout.h EigenValue_Problem.h GetOrbital.h SigmaEK.o
  	$(CC) -c $< 
-@@ -1124,4 +1134,11 @@
+@@ -1157,5 +1151,3 @@
+ 
  SigmaEK.o: SigmaEK.c
  	$(CC) -c $< -o $@
- 
-+#
-+#
-+# gcube2oned
-+#
-+#
- 
-+gcube2oned: gcube2oned.o
-+	$(FC) $^ $(LIB) -o $@
+-
+-

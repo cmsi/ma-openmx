@@ -1,8 +1,8 @@
 --- a/source/Input_std.c
 +++ b/source/Input_std.c
-@@ -90,7 +90,7 @@
+@@ -97,7 +97,7 @@
+   sprintf(filepath,"%s/",filepath);
  
-   input_string("System.CurrrentDirectory",filepath,"./");
    input_string("System.Name",filename,"default");
 -  input_string("DATA.PATH",DFT_DATA_PATH,"../DFT_DATA19");
 +  input_string("DATA.PATH",DFT_DATA_PATH,"/usr/share/openmx/DFT_DATA19");

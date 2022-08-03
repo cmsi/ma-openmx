@@ -1,3 +1,9 @@
+openmx (3.9.9-1) unstable; urgency=low
+
+  * New upstream 3.9.9
+
+ -- Synge Todo <wistaria@phys.s.u-tokyo.ac.jp>  Wed, 03 Aug 2022 12:09:56 +0900
+
 openmx (3.9.2-1) unstable; urgency=low
 
   * New upstream 3.9.2
